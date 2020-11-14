@@ -7,8 +7,14 @@ import roleBuilder from './role.builder'
 const everyTick = {
   creepEachType: {}
 }
+const CREEP_TYPE = {
+  harvester: 'harvester',
+  upgrader: 'upgrader',
+  builder: 'builder',
+}
+
 const spawnList: any = []
-const MAX_ALIVE_CREEP_COUNT = 15
+const MAX_ALIVE_CREEP_COUNT = 16
 
 function addSpawnTask({ role = 'upgrader' } = {}) {
   spawnList.push({ role })
@@ -26,9 +32,9 @@ function reSpawn() {
     return
   }
 
-  const creepRole = spawnList.length ? spawnList[0].role : 'upgrader'
-  const creepName = `${creepRole[0].toUpperCase() + creepRole.substring(1)}${creepId}`
-  const spawnResult = spawn.spawnCreep([WORK, CARRY, MOVE], creepName, { memory: { role: creepRole } as CreepMemory })
+  const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.builder
+  const creepName = `${creepRole[0].toUpperCase() + creepRole.substring(1)}M${creepId}`
+  const spawnResult = spawn.spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE], creepName, { memory: { role: creepRole } as CreepMemory })
   // console.log('spawnResult: ', spawnResult);
 
   while (spawnResult === ERR_NAME_EXISTS) {
@@ -55,6 +61,13 @@ function reSpawn() {
 
 // super creep
 // Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+//   'HarvesterBig',
+//   { memory: { role: 'harvester' } });
+// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE],
+//   'HarvesterBig',
+//   { memory: { role: 'harvester' } });
+
+// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE],
 //   'HarvesterBig',
 //   { memory: { role: 'harvester' } });
 

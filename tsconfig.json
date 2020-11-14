@@ -7,11 +7,12 @@
     "outDir": "default",
     "baseUrl": "src/",
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "experimentalDecorators": true,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "noImplicitThis": true,
   },
   "exclude": [
     "node_modules"

@@ -2,6 +2,7 @@
 import roleHarvester from './role.harvester'
 import roleUpgrader from './role.upgrader'
 import roleBuilder from './role.builder'
+import roleRepairer from './role.repairer'
 // tslint:disable
 
 const everyTick = {
@@ -11,10 +12,28 @@ const CREEP_TYPE = {
   harvester: 'harvester',
   upgrader: 'upgrader',
   builder: 'builder',
+  repairer: 'repairer',
 }
 
 const spawnList: any = []
 const MAX_ALIVE_CREEP_COUNT = 16
+const CREEP_BODIES = {
+  normal200: [WORK, CARRY, MOVE],
+  normal400: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+  normal500: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
+}
+
+function chooseBodies(energyAvailable) {
+  if (energyAvailable < 400) {
+    return CREEP_BODIES.normal200
+  }
+
+  if (energyAvailable < 500) {
+    return CREEP_BODIES.normal400
+  }
+
+  return CREEP_BODIES.normal500
+}
 
 function addSpawnTask({ role = 'upgrader' } = {}) {
   spawnList.push({ role })
@@ -32,10 +51,13 @@ function reSpawn() {
     return
   }
 
-  const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.builder
-  const creepName = `${creepRole[0].toUpperCase() + creepRole.substring(1)}M${creepId}`
-  const spawnResult = spawn.spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE], creepName, { memory: { role: creepRole } as CreepMemory })
-  // console.log('spawnResult: ', spawnResult);
+  const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.harvester
+  const creepName = `${creepRole[0].toUpperCase() + creepRole.substring(1)}${creepId}`
+  const spawnResult = spawn.spawnCreep(
+    chooseBodies(spawn.room.energyAvailable),
+    creepName,
+    { memory: { role: creepRole } as CreepMemory }
+  )
 
   while (spawnResult === ERR_NAME_EXISTS) {
     (Memory as any).creepId = creepId + 1
@@ -47,15 +69,11 @@ function reSpawn() {
     if (spawnList.length) {
       spawnList.shift()
     }
-
-    // console.log('add-creepId: ', (Memory as any).creepId);
   }
 }
 
 // 生产 creep
 // Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], 'Harvester1');
-// Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], 'Harvester2');
-// Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], 'Upgrader1');
 // Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], 'Builder1',
 //   { memory: { role: 'builder' } });
 
@@ -63,7 +81,7 @@ function reSpawn() {
 // Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
 //   'HarvesterBig',
 //   { memory: { role: 'harvester' } });
-// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE],
+// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
 //   'HarvesterBig',
 //   { memory: { role: 'harvester' } });
 
@@ -73,20 +91,17 @@ function reSpawn() {
 
 // 建造扩展
 // Game.spawns.Spawn1.room.createConstructionSite(X, Y, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.createConstructionSite(28, 16, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.createConstructionSite(30, 16, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.createConstructionSite(32, 16, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.createConstructionSite(34, 16, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.createConstructionSite(36, 16, STRUCTURE_EXTENSION);
+// Game.spawns.Spawn1.room.energyAvailable
 
 // 设置角色
 // Game.creeps.Harvester1.memory.role = 'harvester';
-// Game.creeps.Upgrader1.memory.role = 'upgrader';
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = () => {
   // console.log(`Current game tick is ${Game.time}`);
+
+  // 也许需要一个检测系统和事件的发布订阅系统
 
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
@@ -106,15 +121,19 @@ export const loop = () => {
       addSpawnTask({ role: creep.memory.role })
     }
 
-    if (creep.memory.role === 'harvester') {
+    // 策略模式/命令模式封装一下
+    if (creep.memory.role === CREEP_TYPE.harvester) {
       roleHarvester.run(creep);
     }
-    if (creep.memory.role === 'upgrader') {
+    if (creep.memory.role === CREEP_TYPE.upgrader) {
       roleUpgrader.run(creep);
     }
 
-    if (creep.memory.role == 'builder') {
+    if (creep.memory.role == CREEP_TYPE.builder) {
       roleBuilder.run(creep);
+    }
+    if (creep.memory.role == CREEP_TYPE.repairer) {
+      roleRepairer.run(creep);
     }
   }
 };

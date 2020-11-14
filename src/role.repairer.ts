@@ -1,11 +1,6 @@
-import roleUpgrader from './role.upgrader'
+import roleBuilder from './role.builder'
 
-
-const roleBuilder = {
-
-  /**
-   * @param {Creep} creep
-   */
+const roleRepairer = {
   run(creep) {
     if (!creep.memory.sourceId) {
       const sources = creep.room.find(FIND_SOURCES);
@@ -13,23 +8,28 @@ const roleBuilder = {
       creep.memory.sourceId = sources[sourceIndex].id
     }
 
-    if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
-      creep.memory.building = false;
+    if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] === 0) {
+      creep.memory.repairing = false;
       creep.say('🔄 harvest');
     }
-    if (!creep.memory.building && creep.store.getFreeCapacity() === 0) {
-      creep.memory.building = true;
-      creep.say('🚧 build');
+    if (!creep.memory.repairing && creep.store.getFreeCapacity() === 0) {
+      creep.memory.repairing = true;
+      creep.say('🔨 requiring');
     }
 
-    if (creep.memory.building) {
-      const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+    if (creep.memory.repairing) {
+      const targets = creep.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return structure.hits / structure.hitsMax < 0.6
+        }
+      });
+
       if (targets.length) {
-        if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
+        if (creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
           creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
-        roleUpgrader.run(creep)
+        roleBuilder.run(creep)
       }
     }
     else {
@@ -39,6 +39,6 @@ const roleBuilder = {
       }
     }
   }
-};
+}
 
-export default roleBuilder;
+export default roleRepairer

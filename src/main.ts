@@ -8,7 +8,7 @@ const everyTick = {
   creepEachType: {}
 }
 const spawnList: any = []
-const MAX_ALIVE_CREEP_COUNT = 9
+const MAX_ALIVE_CREEP_COUNT = 15
 
 function addSpawnTask({ role = 'upgrader' } = {}) {
   spawnList.push({ role })

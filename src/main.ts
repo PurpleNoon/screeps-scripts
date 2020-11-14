@@ -24,15 +24,15 @@ const CREEP_BODIES = {
 }
 
 function chooseBodies(energyAvailable) {
-  if (energyAvailable < 400) {
-    return CREEP_BODIES.normal200
+  if (energyAvailable >= 500) {
+    return CREEP_BODIES.normal500
   }
 
-  if (energyAvailable < 500) {
+  if (energyAvailable >= 400) {
     return CREEP_BODIES.normal400
   }
 
-  return CREEP_BODIES.normal500
+  return CREEP_BODIES.normal200
 }
 
 function addSpawnTask({ role = 'upgrader' } = {}) {

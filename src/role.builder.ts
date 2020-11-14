@@ -23,7 +23,16 @@ const roleBuilder = {
     }
 
     if (creep.memory.building) {
-      const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+      let targets = creep.room.find(FIND_CONSTRUCTION_SITES, {
+        filter: (structure) => {
+          return structure.structureType === STRUCTURE_EXTENSION
+        }
+      });
+
+      if (!targets.length) {
+        targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+      }
+
       if (targets.length) {
         if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
           creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });

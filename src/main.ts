@@ -71,7 +71,7 @@ function reSpawn() {
   const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.harvester
   const creepPrefix = creepRole[0].toUpperCase() + creepRole.substring(1)
   const creepBodiesType = chooseBodiesType(spawn.room.energyAvailable)
-  const creepName = `${creepPrefix}${creepBodiesType}`
+  const creepName = `${creepPrefix}${creepBodiesType}-${creepId}`
 
   const sources = spawn.room.find(FIND_SOURCES);
   const sourceIndex = Math.floor(Math.random() * sources.length)

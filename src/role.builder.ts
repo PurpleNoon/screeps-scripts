@@ -1,4 +1,5 @@
 import roleRepairer from './role.repairer'
+import BaseCreep from './utils/BaseCreep'
 
 const roleBuilder = {
   run(creep: Creep) {
@@ -16,7 +17,14 @@ const roleBuilder = {
 
       if (structureId) {
         const target = Game.getObjectById(structureId)
-        if (creep.build(target) === ERR_NOT_IN_RANGE) {
+        const result = creep.build(target)
+        // console.log('build-result: ', result)
+
+        if (result === ERR_INVALID_TARGET) {
+          Memory.buildingStructureId = undefined
+        }
+
+        if (result === ERR_NOT_IN_RANGE) {
           creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
@@ -24,9 +32,12 @@ const roleBuilder = {
       }
     }
     else {
-      const source = Game.getObjectById(creep.memory.sourceId)
-      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+      const sources = BaseCreep.findEnergyStoragesNotEmpty(creep.room)
+
+      if (sources.length) {
+        if (creep.withdraw(sources[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(sources[0])
+        }
       }
     }
   }

@@ -3,7 +3,7 @@ import { STORAGE_PRIORITY } from '../constants'
 
 export default {
   // 寻找能量存储结构（包含 spawn 和扩展）
-  findEnergyStorageIncludeSpawnWithPriority(room: Room): AnyStructure[] {
+  findEnergyStoragesIncludeSpawnWithPriority(room: Room): AnyStructure[] {
     let targets = room.find(FIND_STRUCTURES, {
       filter: (structure) => {
         // 下面的写法，是为了避开这个问题 =-=
@@ -29,8 +29,8 @@ export default {
 
     return targets
   },
-  // 寻找能量存储结构（不包含 spawn 和扩展）
-  findEnergyStorage(room: Room): AnyStructure[] {
+  // 寻找未满的能量存储结构（不包含 spawn 和扩展）
+  findEnergyStoragesNotFull(room: Room): AnyStructure[] {
     const targets = room.find(FIND_STRUCTURES, {
       filter: (structure) => {
         return structure.structureType === STRUCTURE_CONTAINER
@@ -40,8 +40,19 @@ export default {
 
     return targets
   },
+  // 寻找非空的能量存储结构（不包含 spawn 和扩展）
+  findEnergyStoragesNotEmpty(room: Room) {
+    const targets = room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return structure.structureType === STRUCTURE_CONTAINER
+          && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      }
+    });
+
+    return targets
+  },
   // 寻找 spawn 和扩展
-  findEnergyStorageOnlySpawn(room: Room): AnyStructure[] {
+  findEnergyStoragesOnlySpawn(room: Room): AnyStructure[] {
     const targets = room.find(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
@@ -59,6 +70,7 @@ export default {
       filter: (structure) => {
         // 检测耐久在 60% 以下的结构
         return structure.hits / structure.hitsMax < 0.6
+          && structure.structureType !== STRUCTURE_WALL // 暂时不修墙
       }
     });
 

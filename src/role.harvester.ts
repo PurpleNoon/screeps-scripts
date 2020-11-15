@@ -10,7 +10,7 @@ const roleHarvester = {
       }
     }
     else {
-      const targets = BaseCreep.findEnergyStorageIncludeSpawnWithPriority(creep.room)
+      const targets = BaseCreep.findEnergyStoragesIncludeSpawnWithPriority(creep.room)
 
       if (targets.length > 0) {
         if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {

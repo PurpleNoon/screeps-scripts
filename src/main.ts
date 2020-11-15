@@ -55,6 +55,7 @@ function addSpawnTask({ role = 'upgrader' } = {}) {
 }
 
 // 重生 creep
+// 之后重写一下这里的逻辑，使得生成的 creep 可变
 function reSpawn() {
   const creepId = Memory.creepId
   if (!creepId) {
@@ -95,30 +96,6 @@ function reSpawn() {
   }
 }
 
-// 生产 creep
-// Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], 'Harvester1');
-// Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], 'Builder1',
-//   { memory: { role: 'builder' } });
-
-// super creep
-// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
-//   'HarvesterBig',
-//   { memory: { role: 'harvester' } });
-// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
-//   'HarvesterBig',
-//   { memory: { role: 'harvester' } });
-
-// Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-//   'HarvesterBig',
-//   { memory: { role: 'harvester' } });
-
-// 建造扩展
-// Game.spawns.Spawn1.room.createConstructionSite(X, Y, STRUCTURE_EXTENSION);
-// Game.spawns.Spawn1.room.energyAvailable
-
-// 设置角色
-// Game.creeps.Harvester1.memory.role = 'harvester';
-
 globalCheck()
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
@@ -127,6 +104,7 @@ export const loop = () => {
   // console.log(`Current game tick is ${Game.time}`);
 
   // 也许需要一个检测系统和事件的发布订阅系统
+  // 找时间弄弄挖运分离，现在的规模，该弄挖运分离了
 
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {

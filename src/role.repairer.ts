@@ -5,7 +5,7 @@ const roleRepairer = {
   run(creep: Creep) {
     if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.repairing = false;
-      creep.say('🔄 harvest');
+      creep.say('🔄 carrying');
     }
     if (!creep.memory.repairing && creep.store.getFreeCapacity() === 0) {
       creep.memory.repairing = true;
@@ -24,7 +24,7 @@ const roleRepairer = {
         // console.log('repair-result: ', result)
 
         // 修理满耐久建筑依旧返回 0，所以需要检查该结构是否为满耐久
-        if (result === ERR_INVALID_TARGET || target.hits === target.hitsMax) {
+        if (result === ERR_INVALID_TARGET || target.hits / target.hitsMax >= 1) {
           Memory.repairingStructureId = undefined
         }
 

@@ -3,32 +3,21 @@ import roleHarvester from './role.harvester'
 import roleUpgrader from './role.upgrader'
 import roleBuilder from './role.builder'
 import roleRepairer from './role.repairer'
-// tslint:disable
+import { CREEP_TYPE } from './constants'
+import config from './config'
 
-const CREEP_TYPE = {
-  harvester: 'harvester',
-  upgrader: 'upgrader',
-  builder: 'builder',
-  repairer: 'repairer',
-}
-
-const MAX_ALIVE_CREEP_COUNT = 16
-const CREEP_BODIES = {
-  normal200: [WORK, CARRY, MOVE],
-  normal400: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-  normal500: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
-}
+const { maxAliveCreepCount, creepBodies } = config
 
 function chooseBodies(energyAvailable) {
   if (energyAvailable >= 500) {
-    return CREEP_BODIES.normal500
+    return creepBodies.normal500
   }
 
   if (energyAvailable >= 400) {
-    return CREEP_BODIES.normal400
+    return creepBodies.normal400
   }
 
-  return CREEP_BODIES.normal200
+  return creepBodies.normal200
 }
 
 function chooseBodiesType(energyAvailable) {
@@ -63,7 +52,7 @@ function reSpawn() {
   }
   const spawn = Game.spawns.Spawn1
 
-  if (Object.keys(Game.creeps).length > MAX_ALIVE_CREEP_COUNT) {
+  if (Object.keys(Game.creeps).length >= maxAliveCreepCount) {
     return
   }
 
@@ -78,7 +67,7 @@ function reSpawn() {
   const sourceId = sources[sourceIndex].id
 
   const spawnResult = spawn.spawnCreep(
-    chooseBodies(spawn.room.energyAvailable),
+    creepBodies.normal500,
     creepName,
     { memory: { role: creepRole, sourceId } as any }
   )

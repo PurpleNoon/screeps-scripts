@@ -1,18 +1,7 @@
 import roleUpgrader from './role.upgrader'
 
-
 const roleBuilder = {
-
-  /**
-   * @param {Creep} creep
-   */
-  run(creep) {
-    // if (!creep.memory.sourceId) {
-    //   const sources = creep.room.find(FIND_SOURCES);
-    //   const sourceIndex = Math.floor(Math.random() * sources.length)
-    //   creep.memory.sourceId = sources[sourceIndex].id
-    // }
-
+  run(creep: Creep) {
     if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.building = false;
       creep.say('🔄 harvest');

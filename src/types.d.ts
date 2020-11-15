@@ -9,7 +9,7 @@ interface CreepMemory {
   role: string;
   room: string;
   working: boolean;
-  sourceId: number;
+  sourceId: Id<Source>;
   building?: boolean;
   upgrading?: boolean;
   repairing?: boolean;

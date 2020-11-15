@@ -7,21 +7,25 @@ import { CREEP_TYPE } from './constants'
 import config from './config'
 import BaseCreep from './utils/BaseCreep'
 
-const { maxAliveCreepCount, creepBodies } = config
+const { maxAliveCreepCount, availableCreepBodies } = config
 
 function chooseBodies(energyAvailable) {
   if (energyAvailable >= 500) {
-    return creepBodies.normal500
+    return availableCreepBodies.normal500
   }
 
   if (energyAvailable >= 400) {
-    return creepBodies.normal400
+    return availableCreepBodies.normal400
   }
 
-  return creepBodies.normal200
+  return availableCreepBodies.normal200
 }
 
 function chooseBodiesType(energyAvailable) {
+  if (energyAvailable >= 1000) {
+    return 'Ⅹ'
+  }
+
   if (energyAvailable >= 500) {
     return 'Ⅴ'
   }
@@ -60,6 +64,7 @@ function reSpawn() {
   const spawnList = Memory.spawnList
   const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.builder
   const creepPrefix = creepRole[0].toUpperCase() + creepRole.substring(1)
+  const creepBodies = availableCreepBodies.normal1000
   const creepBodiesType = chooseBodiesType(spawn.room.energyAvailable)
   const creepName = `${creepPrefix}${creepBodiesType}-${creepId}`
 
@@ -68,7 +73,7 @@ function reSpawn() {
   const sourceId = sources[sourceIndex].id
 
   const spawnResult = spawn.spawnCreep(
-    creepBodies.normal500,
+    creepBodies,
     creepName,
     { memory: { role: creepRole, sourceId } as any }
   )

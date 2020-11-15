@@ -5,9 +5,6 @@ import roleBuilder from './role.builder'
 import roleRepairer from './role.repairer'
 // tslint:disable
 
-const everyTick = {
-  creepEachType: {}
-}
 const CREEP_TYPE = {
   harvester: 'harvester',
   upgrader: 'upgrader',
@@ -15,7 +12,6 @@ const CREEP_TYPE = {
   repairer: 'repairer',
 }
 
-const spawnList: any = []
 const MAX_ALIVE_CREEP_COUNT = 16
 const CREEP_BODIES = {
   normal200: [WORK, CARRY, MOVE],
@@ -35,15 +31,34 @@ function chooseBodies(energyAvailable) {
   return CREEP_BODIES.normal200
 }
 
+function chooseBodiesType(energyAvailable) {
+  if (energyAvailable >= 500) {
+    return 'Ⅴ'
+  }
+
+  if (energyAvailable >= 400) {
+    return 'Ⅳ'
+  }
+
+  return 'Ⅱ'
+}
+
+function globalCheck() {
+  if (!Array.isArray(Memory.spawnList)) {
+    Memory.spawnList = []
+  }
+}
+
 function addSpawnTask({ role = 'upgrader' } = {}) {
+  const spawnList = Memory.spawnList
   spawnList.push({ role })
 }
 
 // 重生 creep
 function reSpawn() {
-  const creepId = (Memory as any).creepId
+  const creepId = Memory.creepId
   if (!creepId) {
-    (Memory as any).creepId = 1
+    Memory.creepId = 1
   }
   const spawn = Game.spawns.Spawn1
 
@@ -51,20 +66,28 @@ function reSpawn() {
     return
   }
 
+  const spawnList = Memory.spawnList
   const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.harvester
-  const creepName = `${creepRole[0].toUpperCase() + creepRole.substring(1)}${creepId}`
+  const creepPrefix = creepRole[0].toUpperCase() + creepRole.substring(1)
+  const creepBodiesType = chooseBodiesType(spawn.room.energyAvailable)
+  const creepName = `${creepPrefix}${creepBodiesType}`
+
+  const sources = spawn.room.find(FIND_SOURCES);
+  const sourceIndex = Math.floor(Math.random() * sources.length)
+  const sourceId = sources[sourceIndex].id
+
   const spawnResult = spawn.spawnCreep(
     chooseBodies(spawn.room.energyAvailable),
     creepName,
-    { memory: { role: creepRole } as CreepMemory }
+    { memory: { role: creepRole, sourceId } as any }
   )
 
   while (spawnResult === ERR_NAME_EXISTS) {
-    (Memory as any).creepId = creepId + 1
+    Memory.creepId = creepId + 1
   }
 
   if (spawnResult === OK) {
-    (Memory as any).creepId = creepId + 1
+    Memory.creepId = creepId + 1
 
     if (spawnList.length) {
       spawnList.shift()
@@ -95,6 +118,8 @@ function reSpawn() {
 
 // 设置角色
 // Game.creeps.Harvester1.memory.role = 'harvester';
+
+globalCheck()
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code

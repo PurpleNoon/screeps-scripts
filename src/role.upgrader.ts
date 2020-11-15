@@ -4,11 +4,11 @@ const roleUpgrader = {
    * @param {Creep} creep
    */
   run(creep: any) {
-    if (!creep.memory.sourceId) {
-      const sources = creep.room.find(FIND_SOURCES);
-      const sourceIndex = Math.floor(Math.random() * sources.length)
-      creep.memory.sourceId = sources[sourceIndex].id
-    }
+    // if (!creep.memory.sourceId) {
+    //   const sources = creep.room.find(FIND_SOURCES);
+    //   const sourceIndex = Math.floor(Math.random() * sources.length)
+    //   creep.memory.sourceId = sources[sourceIndex].id
+    // }
 
     if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.upgrading = false;

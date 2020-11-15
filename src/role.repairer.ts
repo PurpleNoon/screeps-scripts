@@ -2,11 +2,11 @@ import roleBuilder from './role.builder'
 
 const roleRepairer = {
   run(creep) {
-    if (!creep.memory.sourceId) {
-      const sources = creep.room.find(FIND_SOURCES);
-      const sourceIndex = Math.floor(Math.random() * sources.length)
-      creep.memory.sourceId = sources[sourceIndex].id
-    }
+    // if (!creep.memory.sourceId) {
+    //   const sources = creep.room.find(FIND_SOURCES);
+    //   const sourceIndex = Math.floor(Math.random() * sources.length)
+    //   creep.memory.sourceId = sources[sourceIndex].id
+    // }
 
     if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.repairing = false;

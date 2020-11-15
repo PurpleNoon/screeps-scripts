@@ -7,11 +7,11 @@ const roleHarvester = {
    *
    */
   run(creep: any) {
-    if (!creep.memory.sourceId) {
-      const sources = creep.room.find(FIND_SOURCES);
-      const sourceIndex = Math.floor(Math.random() * sources.length)
-      creep.memory.sourceId = sources[sourceIndex].id
-    }
+    // if (!creep.memory.sourceId) {
+    //   const sources = creep.room.find(FIND_SOURCES);
+    //   const sourceIndex = Math.floor(Math.random() * sources.length)
+    //   creep.memory.sourceId = sources[sourceIndex].id
+    // }
 
     if (creep.store.getFreeCapacity() > 0) {
       const source = Game.getObjectById(creep.memory.sourceId)

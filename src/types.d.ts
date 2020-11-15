@@ -10,6 +10,7 @@ interface CreepMemory {
   room: string;
   working: boolean;
   sourceId: Id<Source>;
+  targetId?: Id<AnyStructure>;
   building?: boolean;
   upgrading?: boolean;
   repairing?: boolean;

@@ -13,6 +13,7 @@ interface CreepMemory {
   building?: boolean;
   upgrading?: boolean;
   repairing?: boolean;
+  harvesting?: boolean;
 }
 
 interface Memory {

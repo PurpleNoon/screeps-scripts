@@ -1,4 +1,4 @@
-import roleUpgrader from './role.upgrader'
+import roleRepairer from './role.repairer'
 
 const roleBuilder = {
   run(creep: Creep) {
@@ -27,7 +27,7 @@ const roleBuilder = {
           creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
-        roleUpgrader.run(creep)
+        roleRepairer.run(creep)
       }
     }
     else {

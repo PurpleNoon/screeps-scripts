@@ -121,10 +121,10 @@ export const loop = () => {
       roleUpgrader.run(creep);
     }
 
-    if (creep.memory.role == CREEP_TYPE.builder) {
+    if (creep.memory.role === CREEP_TYPE.builder) {
       roleBuilder.run(creep);
     }
-    if (creep.memory.role == CREEP_TYPE.repairer) {
+    if (creep.memory.role === CREEP_TYPE.repairer) {
       roleRepairer.run(creep);
     }
   }

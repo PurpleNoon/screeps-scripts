@@ -52,5 +52,33 @@ export default {
     });
 
     return targets
-  }
+  },
+  // 寻找需要修复的结构
+  findStructuresNeedRepairing(room: Room): AnyStructure[] {
+    let targets = room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        // 检测耐久在 60% 以下的结构
+        return structure.hits / structure.hitsMax < 0.6
+      }
+    });
+
+    targets = _.sortBy(targets, (structure) => {
+      return structure.hits
+    })
+
+    return targets
+  },
+  // 寻找可修建的结构
+  findStructuresBuildable(room: Room): ConstructionSite<BuildableStructureConstant>[] {
+    let targets = room.find(FIND_CONSTRUCTION_SITES);
+
+    targets = _.sortBy(targets, (structure) => {
+      // 优先建造扩展
+      return structure.structureType === STRUCTURE_EXTENSION
+        ? STORAGE_PRIORITY[STRUCTURE_EXTENSION]
+        : STORAGE_PRIORITY.unknown
+    })
+
+    return targets
+  },
 }

@@ -1,4 +1,5 @@
 import roleUpgrader from './role.upgrader'
+import BaseCreep from './utils/BaseCreep'
 
 const roleRepairer = {
   run(creep: Creep) {
@@ -12,19 +13,12 @@ const roleRepairer = {
     }
 
     if (creep.memory.repairing) {
-      let targets = creep.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return structure.hits / structure.hitsMax < 0.6
-        }
-      });
+      const structureId = Memory.repairingStructureId
 
-      targets = _.sortBy(targets, (structure) => {
-        return structure.hits
-      })
-
-      if (targets.length) {
-        if (creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
+      if (structureId) {
+        const target = Game.getObjectById(structureId)
+        if (creep.repair(target) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
         roleUpgrader.run(creep)

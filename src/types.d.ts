@@ -20,6 +20,8 @@ interface Memory {
   log: any;
   creepId: number;
   spawnList: SimpleCreep[];
+  repairingStructureId?: Id<AnyStructure>;
+  buildingStructureId?: Id<ConstructionSite<BuildableStructureConstant>>;
 }
 
 // `global` extension samples

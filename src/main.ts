@@ -5,6 +5,7 @@ import roleBuilder from './role.builder'
 import roleRepairer from './role.repairer'
 import { CREEP_TYPE } from './constants'
 import config from './config'
+import BaseCreep from './utils/BaseCreep'
 
 const { maxAliveCreepCount, creepBodies } = config
 
@@ -57,7 +58,7 @@ function reSpawn() {
   }
 
   const spawnList = Memory.spawnList
-  const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.harvester
+  const creepRole = spawnList.length ? spawnList[0].role : CREEP_TYPE.builder
   const creepPrefix = creepRole[0].toUpperCase() + creepRole.substring(1)
   const creepBodiesType = chooseBodiesType(spawn.room.energyAvailable)
   const creepName = `${creepPrefix}${creepBodiesType}-${creepId}`
@@ -87,12 +88,28 @@ function reSpawn() {
 
 globalCheck()
 
+function eachLoopCheck() {
+  const { room } = Game.spawns.Spawn1
+
+  if (!Memory.repairingStructureId) {
+    const targets = BaseCreep.findStructuresNeedRepairing(room)
+    Memory.repairingStructureId = targets.length ? targets[0].id : void 0
+  }
+
+  if (!Memory.buildingStructureId) {
+    const targets = BaseCreep.findStructuresBuildable(room)
+    Memory.buildingStructureId = targets.length ? targets[0].id : void 0
+  }
+}
+
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = () => {
   // console.log(`Current game tick is ${Game.time}`);
 
   // 也许需要一个检测系统和事件的发布订阅系统
+  eachLoopCheck()
+
   // 找时间弄弄挖运分离，现在的规模，该弄挖运分离了
 
   // Automatically delete memory of missing creeps

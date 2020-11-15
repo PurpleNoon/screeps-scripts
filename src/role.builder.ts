@@ -12,19 +12,12 @@ const roleBuilder = {
     }
 
     if (creep.memory.building) {
-      let targets = creep.room.find(FIND_CONSTRUCTION_SITES, {
-        filter: (structure) => {
-          return structure.structureType === STRUCTURE_EXTENSION
-        }
-      });
+      const structureId = Memory.buildingStructureId
 
-      if (!targets.length) {
-        targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-      }
-
-      if (targets.length) {
-        if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
+      if (structureId) {
+        const target = Game.getObjectById(structureId)
+        if (creep.build(target) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
         roleRepairer.run(creep)
